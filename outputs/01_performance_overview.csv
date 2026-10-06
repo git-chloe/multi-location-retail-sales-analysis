@@ -1,0 +1,4 @@
+sale_year,transaction_events,priced_net_units,net_sales,avg_net_sales_per_transaction,net_sales_yoy_pct,transactions_yoy_pct,priced_units_yoy_pct
+2023,34137,66999,6253286.44,183.18,,,
+2024,28887,54646,5120006.96,177.24,-18.1,-15.4,-18.4
+2025,27233,53896,5088845.54,186.86,-0.6,-5.7,-1.4

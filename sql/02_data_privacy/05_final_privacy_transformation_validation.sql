@@ -1,0 +1,154 @@
+-- DATA PRIVACY 05
+-- Final Privacy Transformation and Validation
+
+-- Purpose:
+-- Perform the final privacy gate before creating the public-facing
+-- analytical tables.
+--
+-- Earlier privacy steps established:
+--   - the validated transaction-event grain;
+--   - anonymous transaction-ID methodology;
+--   - contextual description sanitization;
+--   - customer-specific free-text handling.
+--
+-- This final step confirms that SKU, sales-source, description, and
+-- transaction metadata transformations work together without exposing
+-- known private identifiers.
+--
+-- Actual private identifiers and mappings are intentionally withheld.
+
+
+-- ============================================================
+-- Step 1: Validate identifying SKU transformation
+-- ============================================================
+--
+-- Private SKU review identified three broad classes requiring replacement:
+--
+--   1. named store/location SKU values;
+--   2. retailer-derived internal service codes;
+--   3. operational pickup/transfer codes containing location information.
+--
+-- These are converted to public-safe labels such as:
+--
+--   anonymous store codes
+--   generic service codes
+--   generic operational codes
+--
+-- Exact private SKU literals remain outside the public repository.
+--
+-- The final private validation checks the complete known identifying SKU set
+-- rather than relying on a broad text-pattern match.
+
+
+-- ============================================================
+-- Step 2: Validate sales-source and transaction metadata
+-- ============================================================
+--
+-- Every retained private sales-source code maps to exactly one approved
+-- public category:
+--
+--   Store A
+--   Store B
+--   Store C
+--   Store D
+--   Online / Event
+--
+-- transaction_attribute was reviewed separately and contains only generic
+-- operational metadata suitable for retention.
+
+
+-- ============================================================
+-- Step 3: Assemble portfolio-safe transformation
+-- ============================================================
+--
+-- The complete private transformation:
+--
+--   1. assigns one anonymous transaction_id per validated transaction event;
+--   2. removes the original receipt identifier;
+--   3. maps private source codes to generic public categories;
+--   4. retains approved generic transaction attributes;
+--   5. preserves validated numeric sales fields;
+--   6. applies contextual Details sanitization;
+--   7. replaces identifying SKU values with anonymous or generic codes.
+--
+-- Intended public schema:
+--
+--   sale_datetime
+--   transaction_id
+--   sales_source
+--   transaction_attribute
+--   quantity
+--   subtotal
+--   sales_tax
+--   discount
+--   loyalty
+--   total
+--   Details
+--   Sku
+
+
+-- ============================================================
+-- Step 4: Validate complete portfolio-safe transformation
+-- ============================================================
+--
+-- Private validation tests:
+--
+--   row-count preservation
+--   transaction-ID coverage
+--   source-mapping completeness
+--   approved transaction attributes
+--   sanitized descriptive text
+--   removal of the specifically identified event
+--   removal of retailer-linked geography
+--   removal of known identifying SKU values
+--
+-- Final results:
+--
+-- 2023
+--   88,627 rows
+--   44,512 anonymous transaction IDs
+--
+-- 2024
+--   74,872 rows
+--   38,203 anonymous transaction IDs
+--
+-- 2025
+--   57,492 rows
+--   27,233 anonymous transaction IDs
+--
+-- Across all three years:
+--
+--   0 missing transaction IDs
+--   0 unmapped sales-source rows
+--   0 unexpected transaction-attribute rows
+--   0 identifying Details rows
+--   0 named-event references
+--   0 retailer-linked geography references
+--   0 known identifying SKU rows
+
+
+-- ============================================================
+-- Findings
+-- ============================================================
+--
+-- The final privacy transformation preserves the analytical structure needed
+-- for sales, transaction, source, service, product, discount, return, and
+-- seasonality analysis while removing private business identifiers.
+--
+-- SKU anonymization preserves analytical meaning by converting identifying
+-- internal values into generic store, service, or operational codes instead
+-- of deleting affected records.
+--
+-- Sales-source values are represented only through anonymous store labels or
+-- the mixed Online / Event category.
+--
+-- Approved transaction attributes remain available because their values are
+-- generic operational metadata rather than identifying information.
+--
+-- The final integrated validation reconciles exactly to the expected annual
+-- row and transaction-event populations and returns zero failures across all
+-- privacy checks.
+--
+-- Privacy decision:
+-- The transformed annual datasets are approved for creation of the
+-- portfolio-facing analytical tables.
